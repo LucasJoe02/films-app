@@ -14,7 +14,7 @@ function App() {
             <Routes>
                 <Route path="/film" element={<Film/>}/>
                 <Route path="/films" element={<Films/>}/>
-                <Route path="films-props" element={<FilmsList/>}/>
+                <Route path="/films-props" element={<FilmsList/>}/>
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
         </div>

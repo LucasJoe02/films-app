@@ -4,9 +4,11 @@ import CSS from 'csstype';
 import { Paper, AlertTitle, Alert } from "@mui/material";
 import FilmListObject from "./FilmListObject"
 import Film from "./Film";
+import {useFilmStore} from "../store";
 
 const FilmList = () => {
-    const [films, setFilms] = React.useState < Array < Film >> ([])
+    const films = useFilmStore(state => state.films)
+    const setFilms = useFilmStore(state => state.setFilms)
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     React.useEffect(() => {
@@ -31,7 +33,7 @@ const FilmList = () => {
     }
     return (
         <Paper elevation={3} style={card} >
-            <h1>FilmList</h1>
+            <h1>Film List</h1>
             <div style={{ display: "inline-block", maxWidth: "965px", minWidth: "320"}}>
                 {errorFlag?
                     <Alert severity = "error">
