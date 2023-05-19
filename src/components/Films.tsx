@@ -1,99 +1,49 @@
-import axios from 'axios'
+import axios from "axios";
 import React from "react";
-import {Link} from "react-router-dom";
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
-import CSS from 'csstype'
-
-const card: CSS.Properties = {
-    padding: "10px",
-    margin: "20px",
-}
-
-interface HeadCell {
-    id: string,
-    label: string,
-    numeric: boolean;
-}
-const headCells: readonly HeadCell[] = [
-    { id: 'ID', label: 'Id', numeric: true },
-    { id: 'title', label: 'Title', numeric: false},
-    { id: 'link', label: 'Link', numeric: false}
-]
-
+import CSS from 'csstype';
+import { Paper, AlertTitle, Alert } from "@mui/material";
+import FilmListObject from "./FilmListObject"
+import Film from "./Film";
+import {useFilmStore} from "../store";
 
 const Films = () => {
-
-    const [films, setFilms] = React.useState < Array < Film >> ([])
+    const films = useFilmStore(state => state.films)
+    const setFilms = useFilmStore(state => state.setFilms)
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     React.useEffect(() => {
+        const getFilms = () => {
+            axios.get('https://seng365.csse.canterbury.ac.nz/api/v1/films')
+                .then((response) => {
+                    setErrorFlag(false)
+                    setErrorMessage("")
+                    setFilms(response.data.films)
+                }, (error) => {
+                    setErrorFlag(true)
+                    setErrorMessage(error.toString())
+                })
+        }
         getFilms()
-    }, [])
+    },[setFilms])
 
-    const getFilms = () => {
-        axios.get('https://seng365.csse.canterbury.ac.nz/api/v1/films')
-            .then((response) => {
-                setErrorFlag(false)
-                setErrorMessage("")
-                setFilms(response.data.films)
-            }, (error) => {
-                setErrorFlag(true)
-                setErrorMessage(error.toString())
-            })
+    const film_rows = () => films.map((film: Film) => <FilmListObject key={ film.filmId + film.title} film={film}/>)
+    const card: CSS.Properties = {
+        padding: "10px",
+        margin: "20px",
     }
-
-    const list_of_films = () => {
-        return films.map((item: Film) =>
-            <TableRow hover
-                tabIndex={-1}
-                key={item.filmId}>
-                <TableCell>
-                    {item.filmId}
-                </TableCell>
-                <TableCell align="right">{item.title}</TableCell>
-                <TableCell align="right"><Link
-                    to={"/films/" + item.filmId}>Go to film</Link></TableCell>
-            </TableRow>
-        )
-    }
-
-    if (errorFlag) {
-        return (
-            <div>
-                <h1>Films</h1>
-                <div style={{color: "red"}}>
-                    {errorMessage}
-                </div>
+    return (
+        <Paper elevation={3} style={card} >
+            <h1>Film List</h1>
+            <div style={{ display: "inline-block", maxWidth: "965px", minWidth: "320"}}>
+                {errorFlag?
+                    <Alert severity = "error">
+                        <AlertTitle> Error </AlertTitle>
+                        { errorMessage }
+                    </Alert>: ""}
+                { film_rows() }
             </div>
-        )
-    } else {
-        return (
-            <Paper elevation={3} style={card}>
-                <h1>Films</h1>
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                {headCells.map((headCell) => (
-                                    <TableCell
-                                        key={headCell.id}
-                                        align={headCell.numeric ? 'right' :
-                                            'left'}
-                                        padding={'normal'}>
-                                        {headCell.label}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {list_of_films()}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
-        )
-    }
-
+        </Paper>
+    )
 }
 
 export default Films;
