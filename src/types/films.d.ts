@@ -7,5 +7,6 @@ type Film = {
     directorLastName: string,
     releaseDate: string,
     ageRating: string,
-    rating: number
+    rating: number,
+    description: string
 }
