@@ -8,10 +8,7 @@ interface IFilmProps {
     film: Film
 }
 
-interface Genre {
-    genreId: number;
-    name: string;
-}
+
 
 const FilmListObject = (props: IFilmProps) => {
     const [film] = React.useState < Film > (props.film)

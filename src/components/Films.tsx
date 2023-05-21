@@ -1,11 +1,13 @@
 import axios from "axios";
 import React, {ChangeEvent, useState} from "react";
 import CSS from 'csstype';
-import {Paper, AlertTitle, Alert, Pagination, TextField, Grid} from "@mui/material";
+import {Paper, AlertTitle, Alert, Pagination, TextField, Grid, Button} from "@mui/material";
 import FilmListObject from "./FilmListObject"
 import Film from "./Film";
 import {useFilmStore} from "../store";
 import FilmOrderDropdown from "./FilmOrderDropdown";
+import FilmGenreFilter from "./FilmGenreFilter";
+import FilmAgeRatingFilter from "./FilmAgeRatingFilter";
 
 const Films = () => {
     const films = useFilmStore(state => state.films)
@@ -15,6 +17,8 @@ const Films = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [searchTerm, setSearchTerm] = useState('')
     const [orderTerm, setOrderTerm] = useState('')
+    const [selectedGenres, setSelectedGenres] = React.useState<number[]>([]);
+    const [selectedAgeRatings, setSelectedAgeRatings] = React.useState<string[]>([]);
     React.useEffect(() => {
         (async () => {
             try {
@@ -34,10 +38,16 @@ const Films = () => {
         })()
     },[setFilms])
 
-    const filteredFilms = films.filter((film) =>
+    const searchedFilms = films.filter((film) =>
         film.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         film.description.toLowerCase().includes(searchTerm.toLowerCase())
     )
+
+    const filteredFilms = searchedFilms.filter(film => {
+        const hasMatchingGenre = selectedGenres.length === 0 || selectedGenres.includes(film.genreId)
+        const hasMatchingAgeRating = selectedAgeRatings.length === 0 || selectedAgeRatings.includes(film.ageRating)
+        return hasMatchingAgeRating && hasMatchingGenre
+    })
 
     const orderedFilms = [...filteredFilms].sort((a, b) => {
         if (orderTerm === 'title-asc') {
@@ -57,7 +67,7 @@ const Films = () => {
     })
 
     const cardsPerPage = 10
-    const totalPages = Math.ceil(filteredFilms.length / cardsPerPage)
+    const totalPages = Math.ceil(orderedFilms.length / cardsPerPage)
     const startIndex = (currentPage - 1) * cardsPerPage
     const endIndex = startIndex + cardsPerPage
     const renderFilmRows = () => {
@@ -78,6 +88,21 @@ const Films = () => {
 
     const handleDropdownChange = (selectedValue: string) => {
         setOrderTerm(selectedValue);
+    };
+
+    const handleGenreChange = (event: { target: { value: any; }; }) => {
+        const selectedGenreIds = event.target.value;
+        setSelectedGenres(selectedGenreIds);
+    }
+
+    const handleAgeRatingChange = (event: { target: { value: any; }; }) => {
+        const selectedAgeRatings = event.target.value;
+        setSelectedAgeRatings(selectedAgeRatings);
+    }
+
+    const handleClearFilters = () => {
+        setSelectedGenres([]);
+        setSelectedAgeRatings([]);
     };
 
     const card: CSS.Properties = {
@@ -101,6 +126,17 @@ const Films = () => {
                     <FilmOrderDropdown onChange={handleDropdownChange}/>
                 </Grid>
             </Grid>
+            <div style={{ display: "inline-block", justifyContent: 'center', marginTop: '0rem' }}>
+                <FilmGenreFilter
+                    selectedGenres={selectedGenres}
+                    handleGenreChange={handleGenreChange}/>
+                <FilmAgeRatingFilter
+                    selectedAgeRatings={selectedAgeRatings}
+                    handleAgeRatingChange={handleAgeRatingChange}/>
+                <Button variant="outlined" onClick={handleClearFilters} style={{ bottom: '0', minHeight: "3.5rem", marginTop: "1.5rem"}}>
+                    Clear Filters
+                </Button>
+            </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0rem' }}>
                 <Pagination
                     showFirstButton
