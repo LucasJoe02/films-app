@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, {ChangeEvent, useState} from "react";
 import CSS from 'csstype';
-import {Paper, AlertTitle, Alert, Pagination, TextField, Grid, Button} from "@mui/material";
+import {Paper, AlertTitle, Alert, Pagination, TextField, Button} from "@mui/material";
 import FilmListObject from "./FilmListObject"
 import Film from "./Film";
 import {useFilmStore} from "../store";
@@ -112,20 +112,15 @@ const Films = () => {
     return (
         <Paper elevation={3} style={card} >
             <h1>Film List</h1>
-            <Grid container alignItems="center" justifyContent="center">
-                <Grid item xs={false} sm={1} />
-                <Grid item xs={12} sm={1.5}>
+            <div style={{ display: "flex", justifyContent: 'center', marginTop: '0rem' }}>
                     <TextField
                         label="Search Films"
                         variant="outlined"
                         value={searchTerm}
                         onChange={handleSearchInputChange}
                     />
-                </Grid>
-                <Grid item xs={false} sm={1}>
                     <FilmOrderDropdown onChange={handleDropdownChange}/>
-                </Grid>
-            </Grid>
+            </div>
             <div style={{ display: "inline-block", justifyContent: 'center', marginTop: '0rem' }}>
                 <FilmGenreFilter
                     selectedGenres={selectedGenres}
