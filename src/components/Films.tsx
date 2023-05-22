@@ -84,6 +84,7 @@ const Films = () => {
 
     const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value)
+        setCurrentPage(1)
     }
 
     const handleDropdownChange = (selectedValue: string) => {
@@ -93,11 +94,13 @@ const Films = () => {
     const handleGenreChange = (event: { target: { value: any; }; }) => {
         const selectedGenreIds = event.target.value;
         setSelectedGenres(selectedGenreIds);
+        setCurrentPage(1)
     }
 
     const handleAgeRatingChange = (event: { target: { value: any; }; }) => {
         const selectedAgeRatings = event.target.value;
         setSelectedAgeRatings(selectedAgeRatings);
+        setCurrentPage(1)
     }
 
     const handleClearFilters = () => {

@@ -3,12 +3,11 @@ import CSS from "csstype";
 import {Avatar, Card, CardContent, CardMedia, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
+import Film from "./Film";
 
 interface IFilmProps {
     film: Film
 }
-
-
 
 const FilmListObject = (props: IFilmProps) => {
     const [film] = React.useState < Film > (props.film)
@@ -86,6 +85,10 @@ const FilmListObject = (props: IFilmProps) => {
                         src={'https://seng365.csse.canterbury.ac.nz/api/v1/users/' + film.directorId + '/image'}
                         alt="Profile Picture"
                         sx={{ width: 40, height: 40, marginRight: '1rem'}}
+                        onError={(event) => {
+                            const imgElement = event.target as HTMLImageElement
+                            imgElement.src = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp';
+                        }}
                     />
                     <Typography variant="body2" color="text.secondary" sx={{ marginBottom: 0 }}>
                         Director: {film.directorFirstName}, {film.directorLastName}
