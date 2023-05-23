@@ -95,7 +95,7 @@ const Film = () => {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0rem' }}>
                         <Avatar
                             src={'https://seng365.csse.canterbury.ac.nz/api/v1/users/' + film.directorId + '/image'}
-                            alt="Profile Picture"
+                            alt={film.directorFirstName}
                             sx={{ width: 40, height: 40, marginRight: '1rem'}}
                             onError={(event) => {
                                 const imgElement = event.target as HTMLImageElement
