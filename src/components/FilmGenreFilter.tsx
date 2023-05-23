@@ -6,11 +6,12 @@ const FilmGenreFilter = ({ selectedGenres, handleGenreChange}: {
     selectedGenres: number[];
     handleGenreChange: (event: SelectChangeEvent<number[]>, child: ReactNode) => void;
     }) => {
+    const apiUrl = process.env.REACT_APP_API_URL
     const [genreList, setGenres] = React.useState<Genre[]>([])
 
     React.useEffect(() => {
         const fetchGenres = () => {
-            axios.get('https://seng365.csse.canterbury.ac.nz/api/v1/films/genres')
+            axios.get(`${apiUrl}/films/genres`)
                 .then((response) => {
                     setGenres(response.data)
                 }, (error) => {
@@ -18,7 +19,7 @@ const FilmGenreFilter = ({ selectedGenres, handleGenreChange}: {
                 })
         }
         fetchGenres()
-    },[setGenres])
+    },[apiUrl, setGenres])
 
     return (
         <FormControl style={{minWidth: '230px', marginTop: '1rem'}}>

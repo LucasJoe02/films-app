@@ -8,8 +8,11 @@ import {useFilmStore} from "../store";
 import FilmOrderDropdown from "./FilmOrderDropdown";
 import FilmGenreFilter from "./FilmGenreFilter";
 import FilmAgeRatingFilter from "./FilmAgeRatingFilter";
+import {useNavigate} from "react-router-dom";
 
 const Films = () => {
+    const navigate = useNavigate();
+    const apiUrl = process.env.REACT_APP_API_URL
     const films = useFilmStore(state => state.films)
     const setFilms = useFilmStore(state => state.setFilms)
     const [errorFlag, setErrorFlag] = React.useState(false)
@@ -22,21 +25,23 @@ const Films = () => {
     React.useEffect(() => {
         (async () => {
             try {
-                const response = await axios.get('https://seng365.csse.canterbury.ac.nz/api/v1/films')
+                const response = await axios.get(`${apiUrl}/films`)
                 const filmsData = response.data.films;
 
                 const updatedFilms = await Promise.all(filmsData.map(async (film: Film) => {
-                    const filmResponse = await axios.get(`https://seng365.csse.canterbury.ac.nz/api/v1/films/${film.filmId}`)
+                    const filmResponse = await axios.get(`${apiUrl}/films/${film.filmId}`)
                     const filmData = filmResponse.data
                     return { ...film, description: filmData.description}
                 }))
                 setFilms(updatedFilms)
+                setErrorFlag(false)
+                setErrorMessage("")
             } catch (error: any) {
                 setErrorFlag(true)
                 setErrorMessage(error.toString())
             }
         })()
-    },[setFilms])
+    },[apiUrl, setFilms])
 
     const searchedFilms = films.filter((film) =>
         film.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -72,12 +77,16 @@ const Films = () => {
     const endIndex = startIndex + cardsPerPage
     const renderFilmRows = () => {
         if (orderedFilms.length > 0) {
-            return orderedFilms.slice(startIndex, endIndex).map((film: Film) => <FilmListObject key={ film.filmId + film.title} film={film}/>)
+            return orderedFilms.slice(startIndex, endIndex).map((film: Film) => <FilmListObject onCardClick={handleCardClick} key={ film.filmId + film.title} film={film}/>)
         } else {
             return <h3 style={{color: "red"}}>No films match search</h3>
         }
-
     }
+
+    const handleCardClick = (filmId: string) => {
+        navigate('/films/' + filmId);
+    };
+
     const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
         setCurrentPage(page)
     }

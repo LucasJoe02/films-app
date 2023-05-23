@@ -1,22 +1,22 @@
 import React from "react";
 import CSS from "csstype";
 import {Avatar, Card, CardContent, CardMedia, Typography} from "@mui/material";
-import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import Film from "./Film";
 
 interface IFilmProps {
     film: Film
+    onCardClick: (filmId: string) => void
 }
 
 const FilmListObject = (props: IFilmProps) => {
+    const apiUrl = process.env.REACT_APP_API_URL
     const [film] = React.useState < Film > (props.film)
     const [genres, setGenres] = React.useState<Genre[]>([])
-    const navigate = useNavigate();
 
     React.useEffect(() => {
         const fetchGenres = () => {
-            axios.get('https://seng365.csse.canterbury.ac.nz/api/v1/films/genres')
+            axios.get(`${apiUrl}/films/genres`)
                 .then((response) => {
                     setGenres(response.data)
                 }, (error) => {
@@ -24,7 +24,7 @@ const FilmListObject = (props: IFilmProps) => {
                 })
         }
         fetchGenres()
-    },[setGenres])
+    },[apiUrl, setGenres])
 
     const genreDictionary: { [key: number]: string} = {};
     genres.forEach(genre => {
@@ -47,13 +47,13 @@ const FilmListObject = (props: IFilmProps) => {
     }
 
     const handleCardClick = () => {
-        navigate('/films/' + film.filmId)
+        props.onCardClick(String(film.filmId))
     }
 
     const filmCardStyles: CSS.Properties = {
         display: "inline-block",
         height: "360px",
-        width: "300px",
+        minWidth: "300px",
         margin: "10px",
         padding: "0px",
         cursor: 'pointer'
@@ -73,7 +73,7 @@ const FilmListObject = (props: IFilmProps) => {
                 height="200"
                 width="200"
                 sx={{objectFit:"cover"}}
-                image={'https://seng365.csse.canterbury.ac.nz/api/v1/films/' + film.filmId + '/image'}
+                image={`${apiUrl}/films/` + film.filmId + '/image'}
                 alt={film.title + ' image'}
             />
             <CardContent>
@@ -82,7 +82,7 @@ const FilmListObject = (props: IFilmProps) => {
                 </Typography>
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0rem' }}>
                     <Avatar
-                        src={'https://seng365.csse.canterbury.ac.nz/api/v1/users/' + film.directorId + '/image'}
+                        src={`${apiUrl}/users/` + film.directorId + '/image'}
                         alt={film.directorFirstName}
                         sx={{ width: 40, height: 40, marginRight: '1rem'}}
                         onError={(event) => {
