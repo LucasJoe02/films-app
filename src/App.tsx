@@ -5,19 +5,27 @@ import Films from "./components/Films";
 import Film from "./components/Film";
 import NotFound from "./components/NotFound";
 import Navbar from "./components/Navbar";
-//import FilmsList from "./components/FilmsList";
+import Login from "./components/Login";
+import AuthStore from "./store/authStore";
 
 function App() {
-    const isLoggedIn = false
+    const token = AuthStore((state) => state.userToken);
+
   return (
     <div className="App">
       <Router>
-          <Navbar isLoggedIn={isLoggedIn} />
+          <Navbar/>
         <div>
             <Routes>
                 <Route path="/" element={<Navigate to="/films" replace />} />
                 <Route path="/films/:id" element={<Film/>}/>
                 <Route path="/films" element={<Films/>}/>
+                {token ? (
+                    <Route path="/login" element={<Navigate to="/films" replace />}/>
+                ) : (
+                    <Route path="/login" element={<Login/>}/>
+                )}
+
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
         </div>

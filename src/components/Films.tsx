@@ -4,7 +4,6 @@ import CSS from 'csstype';
 import {Paper, AlertTitle, Alert, Pagination, TextField, Button} from "@mui/material";
 import FilmListObject from "./FilmListObject"
 import Film from "./Film";
-import {useFilmStore} from "../store";
 import FilmOrderDropdown from "./FilmOrderDropdown";
 import FilmGenreFilter from "./FilmGenreFilter";
 import FilmAgeRatingFilter from "./FilmAgeRatingFilter";
@@ -13,8 +12,9 @@ import {useNavigate} from "react-router-dom";
 const Films = () => {
     const navigate = useNavigate();
     const apiUrl = process.env.REACT_APP_API_URL
-    const films = useFilmStore(state => state.films)
-    const setFilms = useFilmStore(state => state.setFilms)
+    //const films = useFilmStore(state => state.films)
+    //const setFilms = useFilmStore(state => state.setFilms)
+    const [films, setFilms] = React.useState<Film[]>([])
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const [currentPage, setCurrentPage] = useState(1)
