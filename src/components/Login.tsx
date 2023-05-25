@@ -1,8 +1,9 @@
 import CSS from "csstype";
-import {Button, CardContent, Link, Paper, TextField, Typography} from "@mui/material";
+import {Button, CardContent, Paper, TextField, Typography} from "@mui/material";
 import React from "react";
 import axios from "axios";
 import AuthStore from "../store/authStore";
+import RegisterModal from "./RegisterModal";
 
 const Login = () => {
     const apiUrl = process.env.REACT_APP_API_URL
@@ -10,7 +11,6 @@ const Login = () => {
     const setUserId = AuthStore((state) => state.setUserId)
     const [email, setEmail] = React.useState("")
     const [password, setPassword] = React.useState("")
-    const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
 
     const handleLogin = (e: React.FormEvent) => {
@@ -22,15 +22,14 @@ const Login = () => {
         }
         axios.post(`${apiUrl}/users/login`, requestBody)
             .then((response) => {
-                setErrorFlag(false)
                 setErrorMessage("")
                 setUserId(response.data.userId)
                 setToken(response.data.token)
             }).catch((error) => {
-            setErrorFlag(true)
-            console.log(error)
             setErrorMessage(error.response.statusText)
         })
+        setEmail('');
+        setPassword('');
     };
 
     const filmPaperStyle: CSS.Properties = {
@@ -82,9 +81,7 @@ const Login = () => {
                 {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                 <Typography variant="body2" align="center" sx={{ marginTop: '1rem' }}>
                     Don't have an account?{' '}
-                    <Link href="/signup" color="primary">
-                        Sign up
-                    </Link>
+                    <RegisterModal/>
                 </Typography>
             </CardContent>
         </Paper>

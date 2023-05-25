@@ -7,6 +7,7 @@ import NotFound from "./components/NotFound";
 import Navbar from "./components/Navbar";
 import Login from "./components/Login";
 import AuthStore from "./store/authStore";
+import User from "./components/User";
 
 function App() {
     const token = AuthStore((state) => state.userToken);
@@ -20,12 +21,18 @@ function App() {
                 <Route path="/" element={<Navigate to="/films" replace />} />
                 <Route path="/films/:id" element={<Film/>}/>
                 <Route path="/films" element={<Films/>}/>
-                {token ? (
-                    <Route path="/login" element={<Navigate to="/films" replace />}/>
-                ) : (
-                    <Route path="/login" element={<Login/>}/>
-                )}
 
+                {token ? (
+                    <Route>
+                        <Route path="/profile" element={<User/>}/>
+                        <Route path="/login" element={<Navigate to="/films" replace />}/>
+                    </Route>
+                ) : (
+                    <Route>
+                        <Route path="/profile" element={<Navigate to="/films" replace />}/>
+                        <Route path="/login" element={<Login/>}/>
+                    </Route>
+                )}
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
         </div>
