@@ -1,4 +1,5 @@
 import {AppBar, Button, Grid, Toolbar, Typography} from "@mui/material";
+import EmergencyRecordingIcon from '@mui/icons-material/EmergencyRecording';
 import {Link, useNavigate} from "react-router-dom";
 import React from "react";
 import axios from "axios";
@@ -23,6 +24,8 @@ const Navbar = () => {
                 setUserId("0")
                 navigate('/films')
             }).catch((error) => {
+            setUserToken("")
+            setUserId("0")
             console.log(error)
         })
 
@@ -33,14 +36,15 @@ const Navbar = () => {
             <Toolbar>
                 <Grid container justifyContent="space-between" alignItems="center">
                     <Grid item sx={{ flex: '1 1 33.33%'}}>
-                        <Button component={Link} to="/" color="inherit">
-                            Home
+                        <Button component={Link} to="/films" color="inherit">
+                            Films
                         </Button>
                     </Grid>
                     <Grid item sx={{ flex: '1 1 33.33%'}}>
-                        <Typography variant="h6" sx={{flexGrow: 1, textAlign: 'center'}}>
-                            Movie Central
-                        </Typography>
+                            <Typography variant="h5" sx={{flexGrow: 1, textAlign: 'center'}}>
+                                <EmergencyRecordingIcon/>
+                                Funky Flicks
+                            </Typography>
                     </Grid>
                     <Grid item sx={{ flex: '1 1 33.33%'}}>
                         {token ? (

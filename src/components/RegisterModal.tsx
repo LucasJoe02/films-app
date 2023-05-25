@@ -1,8 +1,21 @@
 import React from "react";
-import {Box, Button, Container, IconButton, InputAdornment, Link, Modal, TextField, Typography} from "@mui/material";
+import {
+    Avatar,
+    Box,
+    Button,
+    Container,
+    IconButton,
+    Input,
+    InputAdornment,
+    Link,
+    Modal,
+    TextField,
+    Typography
+} from "@mui/material";
 import axios from "axios";
 import AuthStore from "../store/authStore";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const RegisterModal = () => {
     const apiUrl = process.env.REACT_APP_API_URL
@@ -15,6 +28,7 @@ const RegisterModal = () => {
     const [errorMessage, setErrorMessage] = React.useState("")
     const setUserId = AuthStore((state) => state.setUserId)
     const setToken = AuthStore((state) => state.setUserToken)
+    const [profileImage, setProfileImage] = React.useState<File | null>(null);
 
     const handleOpen = () => {
         setOpen(true)
@@ -29,6 +43,32 @@ const RegisterModal = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     };
 
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            const file = event.target.files[0];
+            setProfileImage(file);
+        }
+    };
+
+    const setProfilePicture = (userId: string, token: string) => {
+        if (profileImage) {
+            const header = {
+                headers: {
+                    'X-Authorization': token,
+                    'Content-Type': profileImage.type
+                }
+            }
+            axios.put(`${apiUrl}/users/` + userId + '/image', profileImage, header)
+                .then(() => {
+                    setErrorMessage("")
+                    setProfileImage(null)
+                }, (error) => {
+                    setErrorMessage(error.response.statusText)
+                    setProfileImage(null)
+                })
+        }
+    }
+
     const login = () => {
         const requestBody = {
             email: email,
@@ -39,6 +79,7 @@ const RegisterModal = () => {
                 setErrorMessage("")
                 setUserId(response.data.userId)
                 setToken(response.data.token)
+                setProfilePicture(response.data.userId, response.data.token)
             }).catch((error) => {
             setErrorMessage(error.response.statusText)
         })
@@ -121,6 +162,22 @@ const RegisterModal = () => {
                                     ),
                                 }}
                             />
+                            <div>
+                                <Input
+                                    type="file"
+                                    inputProps={{ accept: 'image/jpeg, image/png, image/gif' }}
+                                    id="profileImage"
+                                    style={{ display: 'none' }}
+                                    onChange={handleImageChange}
+                                />
+                                <label htmlFor="profileImage">
+                                    <Button component="span" startIcon={<CloudUploadIcon />}>
+                                        Change Image
+                                    </Button>
+                                </label>
+                            </div>
+                            {profileImage && <Avatar src={URL.createObjectURL(profileImage)} alt="Selected"
+                                                     sx={{ width: 100, height: 100}}/>}
                             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                             <Button variant="contained" type="submit" sx={{ mt: 2 }}>
                                 Register
