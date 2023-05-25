@@ -134,7 +134,7 @@ const Film = () => {
                             }}
                         />
                         <Typography variant="body2" component="p">
-                            {film.directorFirstName}, {film.directorLastName}
+                            {film.directorFirstName} {film.directorLastName}
                         </Typography>
                     </div>
                     <Divider style={{ margin: '0.5rem 0' }} />

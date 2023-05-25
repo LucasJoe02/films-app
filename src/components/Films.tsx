@@ -12,8 +12,6 @@ import {useNavigate} from "react-router-dom";
 const Films = () => {
     const navigate = useNavigate();
     const apiUrl = process.env.REACT_APP_API_URL
-    //const films = useFilmStore(state => state.films)
-    //const setFilms = useFilmStore(state => state.setFilms)
     const [films, setFilms] = React.useState<Film[]>([])
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")

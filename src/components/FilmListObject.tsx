@@ -91,7 +91,7 @@ const FilmListObject = (props: IFilmProps) => {
                         }}
                     />
                     <Typography variant="body2" color="text.secondary" sx={{ marginBottom: 0 }}>
-                        Director: {film.directorFirstName}, {film.directorLastName}
+                        Director: {film.directorFirstName} {film.directorLastName}
                     </Typography>
                 </div>
                 <Typography variant="body2" color="text.secondary">
