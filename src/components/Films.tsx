@@ -8,6 +8,7 @@ import FilmOrderDropdown from "./FilmOrderDropdown";
 import FilmGenreFilter from "./FilmGenreFilter";
 import FilmAgeRatingFilter from "./FilmAgeRatingFilter";
 import {useNavigate} from "react-router-dom";
+import CreateFilmModal from "./CreateFilmModal";
 
 const Films = () => {
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Films = () => {
     const [orderTerm, setOrderTerm] = useState('')
     const [selectedGenres, setSelectedGenres] = React.useState<number[]>([]);
     const [selectedAgeRatings, setSelectedAgeRatings] = React.useState<string[]>([]);
+    const [filmsReloadKey, setFilmsReloadKey] = React.useState(0)
     React.useEffect(() => {
         (async () => {
             try {
@@ -39,7 +41,7 @@ const Films = () => {
                 setErrorMessage(error.toString())
             }
         })()
-    },[apiUrl, setFilms])
+    },[apiUrl, setFilms, filmsReloadKey])
 
     const searchedFilms = films.filter((film) =>
         film.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -79,6 +81,10 @@ const Films = () => {
         } else {
             return <h3 style={{color: "red"}}>No films match search</h3>
         }
+    }
+
+    const handleFilmsReload = () => {
+        setFilmsReloadKey((prevKey) => prevKey + 1);
     }
 
     const handleCardClick = (filmId: string) => {
@@ -141,6 +147,8 @@ const Films = () => {
                 <Button variant="outlined" onClick={handleClearFilters} style={{ bottom: '0', minHeight: "3.5rem", marginTop: "1.5rem"}}>
                     Clear Filters
                 </Button>
+                <br/>
+                <CreateFilmModal handleFilmsReload={handleFilmsReload}/>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '0rem' }}>
                 <Pagination

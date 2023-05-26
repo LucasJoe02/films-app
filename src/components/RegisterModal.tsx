@@ -172,12 +172,13 @@ const RegisterModal = () => {
                                 />
                                 <label htmlFor="profileImage">
                                     <Button component="span" startIcon={<CloudUploadIcon />}>
-                                        Change Image
+                                        Set Image
                                     </Button>
                                 </label>
                             </div>
                             {profileImage && <Avatar src={URL.createObjectURL(profileImage)} alt="Selected"
                                                      sx={{ width: 100, height: 100}}/>}
+                            <br/>
                             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                             <Button variant="contained" type="submit" sx={{ mt: 2 }}>
                                 Register

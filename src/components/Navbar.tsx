@@ -60,12 +60,7 @@ const Navbar = () => {
                             </Button>
                         )}
                     </Grid>
-
                 </Grid>
-
-
-
-
             </Toolbar>
         </AppBar>
     )

@@ -43,7 +43,7 @@ const SubmitReviewModal: React.FC<SubmitReviewModalProps> = ({ film, handleRevie
         if (newValue !== null) {
             setRating(newValue);
         }
-    };
+    }
 
     const handleReview = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -102,6 +102,7 @@ const SubmitReviewModal: React.FC<SubmitReviewModalProps> = ({ film, handleRevie
                             />
                             <TextField
                                 label="Review"
+                                multiline
                                 value={review}
                                 onChange={(e) => setReview(e.target.value)}
                                 fullWidth
