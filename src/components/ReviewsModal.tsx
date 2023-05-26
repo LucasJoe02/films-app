@@ -3,11 +3,12 @@ import React, {useState} from "react";
 import axios from "axios";
 import ReviewListObject from "./ReviewListObject";
 
-interface IFilmProps {
-    filmId: string | undefined
+interface IReviewsProps {
+    filmId: string | undefined,
+    reviewsReloadKey: number
 }
 
-const ReviewsModal = (props: IFilmProps) => {
+const ReviewsModal = (props: IReviewsProps) => {
     const apiUrl = process.env.REACT_APP_API_URL
     const [filmId, setFilmId] = React.useState < string | undefined > (props.filmId)
     const [open, setOpen] = useState(false);
@@ -28,7 +29,7 @@ const ReviewsModal = (props: IFilmProps) => {
                 })
         }
         fetchReviews()
-    },[apiUrl, filmId, setReviews])
+    },[apiUrl, filmId, setReviews, props.reviewsReloadKey])
 
     React.useEffect(() => {
         setFilmId(props.filmId);
@@ -52,7 +53,7 @@ const ReviewsModal = (props: IFilmProps) => {
     }
 
     return (
-        <div>
+        <>
             <Link onClick={handleOpen} sx={{cursor: 'pointer'}}>{reviews.length} Reviews</Link>
             <Modal open={open} onClose={handleClose}>
                 <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
@@ -80,7 +81,7 @@ const ReviewsModal = (props: IFilmProps) => {
                             onClick={handleClose}>Close</Button>
                 </Box>
             </Modal>
-        </div>
+        </>
     )
 
 }

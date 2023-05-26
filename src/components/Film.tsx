@@ -15,6 +15,7 @@ import {
 import CSS from "csstype";
 import ReviewsModal from "./ReviewsModal";
 import FilmListObject from "./FilmListObject";
+import SubmitReviewModal from "./SubmitReviewModal";
 
 const Film = () => {
     const navigate = useNavigate()
@@ -24,6 +25,7 @@ const Film = () => {
     const [film, setFilm] = React.useState<Film>({filmId:0, title:"", genreId: 0, directorId: 0, directorFirstName: "",
         directorLastName: "", releaseDate: "", ageRating: "", rating: 0, description: ""})
     const [films, setFilms] = React.useState<Film[]>([])
+    const [reviewsReloadKey, setReviewsReloadKey] = React.useState(0);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     React.useEffect(() => {
@@ -47,7 +49,7 @@ const Film = () => {
                 })
         }
         fetchData()
-    }, [apiUrl, filmId, setFilm, setGenres, setFilms])
+    }, [apiUrl, filmId, setFilm, setGenres, setFilms, reviewsReloadKey])
 
     const genreDictionary: { [key: number]: string} = {};
     genres.forEach(genre => {
@@ -67,6 +69,10 @@ const Film = () => {
 
     const getGenre = (genreId: number) => {
         return genreDictionary[genreId];
+    }
+
+    const handleReviewsReload = () => {
+        setReviewsReloadKey((prevKey) => prevKey + 1);
     }
 
     const filteredFilms = films.filter(filmListItem => {
@@ -150,9 +156,12 @@ const Film = () => {
                     <Typography variant="body2" component="p">
                         Genre: {getGenre(film.genreId)}
                     </Typography>
-                    <Typography variant="body2" component="p" style={{marginTop: "0.5rem"}}>
-                        Rating: ⭐{film.rating} <ReviewsModal filmId={filmId}></ReviewsModal>
+                    <Typography key={reviewsReloadKey} variant="body2" component="p" style={{marginTop: "0.5rem"}}>
+                        Rating: ⭐{film.rating}
                     </Typography>
+                    <ReviewsModal reviewsReloadKey={reviewsReloadKey} filmId={filmId}></ReviewsModal>
+                    <br/>
+                    <SubmitReviewModal film={film} handleReviewsReload={handleReviewsReload}/>
                     <Divider style={{ margin: '0.5rem 0' }} />
                     <Button variant="contained" component={Link} to="/films">
                         Back to Films
